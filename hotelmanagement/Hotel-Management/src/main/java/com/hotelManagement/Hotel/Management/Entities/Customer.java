@@ -25,6 +25,37 @@ public class Customer {
 	private String custEmail;
 	
 	private String custPhone;
-	
 
+
+	public void setCustId(Long custId) {
+		this.custId = custId;
+	}
+
+	public void setCustName(String custName) {
+		this.custName = custName;
+	}
+
+	public void setCustEmail(String custEmail) {
+		this.custEmail = custEmail;
+	}
+
+	public void setCustPhone(String custPhone) {
+		this.custPhone = custPhone;
+	}
+
+	public Long getCustId() {
+		return custId;
+	}
+
+	public String getCustName() {
+		return custName;
+	}
+
+	public String getCustEmail() {
+		return custEmail;
+	}
+
+	public String getCustPhone() {
+		return custPhone;
+	}
 }

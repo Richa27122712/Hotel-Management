@@ -2,6 +2,8 @@ package com.hotelManagement.Hotel.Management.ServiceImpl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +26,12 @@ public class BookingServiceImpl implements BookingService{
 	
 	@Autowired
 	private CustomerRepository cutomerRepository;
-	
-	
+
+
+
+
+	private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
+
 	public Booking createBooking(Booking booking,Long hotelId,Long custId) {
 		Customer customer=cutomerRepository.findById(custId).orElseThrow(()->new RuntimeException("customer not find"));
 		Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(()->new RuntimeException("hotel not find"));
@@ -52,8 +58,8 @@ public void uploadReceipt(Long bookingId,MultipartFile file) {
 	bookingRepository.save(booking);
 	
 }
-public void cancleBooking(Long bookinId) {
-	bookingRepository.deleteById(bookinId);
+public void cancleBooking(Long bookingId) {
+	bookingRepository.deleteById(bookingId);
 }
 
 }
