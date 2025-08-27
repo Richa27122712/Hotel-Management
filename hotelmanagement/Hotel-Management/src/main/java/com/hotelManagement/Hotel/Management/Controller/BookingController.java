@@ -5,15 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hotelManagement.Hotel.Management.Entities.Booking;
@@ -24,47 +18,61 @@ import com.hotelManagement.Hotel.Management.Service.HotelService;
 @RestController
 @RequestMapping("/api")
 public class BookingController {
-	
+
 	@Autowired
 	private BookingService bookingService;
-	
+
 	@Autowired
 	private HotelService hotelService;
-	
+
 	@Autowired
 	private CustomerService customerService;
-	
-	
-	@PostMapping("/bookings")
-	public ResponseEntity<Booking> createBooking(@RequestBody Booking booking,@RequestParam Long hotelId,@RequestParam Long custId){
-		Booking bookings=bookingService.createBooking(booking, hotelId, custId);
-		return new ResponseEntity<>(bookings,HttpStatus.CREATED);
 
-}
+	// Only customers can create booking
+	@PostMapping("/bookings")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	public ResponseEntity<Booking> createBooking(@RequestBody Booking booking, @RequestParam Long hotelId,
+			@RequestParam Long custId) {
+		Booking savedBooking = bookingService.createBooking(booking, hotelId, custId);
+		return new ResponseEntity<>(savedBooking, HttpStatus.CREATED);
+	}
+
+	// Only admins can get all bookings
 	@GetMapping("/bookings/all")
-	public ResponseEntity<List<Booking>> getAllBooking(){
-		List<Booking> booking=bookingService.getBooking();
-		return new ResponseEntity<>(booking,HttpStatus.OK);
-		
-		
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<Booking>> getAllBookings() {
+		List<Booking> bookings = bookingService.getBooking();
+		return new ResponseEntity<>(bookings, HttpStatus.OK);
 	}
+
+	// Admin can get any booking; customer can get only their booking
 	@GetMapping("/bookings/{id}")
-	public ResponseEntity<Booking> getBookingById(Long id){
-		Booking booking=bookingService.getBookingById(id);
-		return new ResponseEntity<>(booking,HttpStatus.OK);
+	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+	public ResponseEntity<Booking> getBookingById(@PathVariable Long id, @RequestParam(required = false) Long custId) {
+		Booking booking = bookingService.getBookingById(id);
+
+		// Optional: extra check to allow customer only to access their own booking
+		if ("ROLE_CUSTOMER".equals(SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator()
+				.next().getAuthority()) && !booking.getCustomer().getCustId().equals(custId)) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		return new ResponseEntity<>(booking, HttpStatus.OK);
 	}
-	@PostMapping("/bookings/upload")
-	public ResponseEntity<String> uploadReceipt(@PathVariable Long bookingId,@RequestParam MultipartFile file){
+
+	// Customer uploads receipt for their booking
+	@PostMapping("/bookings/{id}/upload")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	public ResponseEntity<String> uploadReceipt(@PathVariable Long bookingId, @RequestParam MultipartFile file) {
 		bookingService.uploadReceipt(bookingId, file);
-		return new ResponseEntity<>("receipt uploaded" + file.getOriginalFilename(),HttpStatus.CREATED);
+		return new ResponseEntity<>("Receipt uploaded: " + file.getOriginalFilename(), HttpStatus.CREATED);
 	}
+
+	// Customer cancels their booking
 	@DeleteMapping("/bookings/{id}")
-	
-	public ResponseEntity<String> cancleBooking(@PathVariable Long bookingId){
-	bookingService.cancleBooking(bookingId);
-		return new ResponseEntity<>("Booking is cancled" + bookingId,HttpStatus.OK);
-		
-	}	 
-		
-		 
+	@PreAuthorize("hasRole('CUSTOMER')")
+	public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
+		bookingService.cancleBooking(id);
+		return new ResponseEntity<>("Booking cancelled: " + id, HttpStatus.OK);
+	}
 }

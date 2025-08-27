@@ -30,77 +30,10 @@ public class Booking {
 	
 	private LocalDate checkInDate;
 
-	public void setBookingId(Long bookingId) {
-		this.bookingId = bookingId;
-	}
+	
 
-	public void setBookingNumber(String bookingNumber) {
-		this.bookingNumber = bookingNumber;
-	}
 
-	public void setCheckInDate(LocalDate checkInDate) {
-		this.checkInDate = checkInDate;
-	}
 
-	public void setCheckOutDate(LocalDate checkOutDate) {
-		this.checkOutDate = checkOutDate;
-	}
-
-	public void setTotalAmount(double totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public void setFilepath(String filepath) {
-		this.filepath = filepath;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
-	public void setHotel(Hotel hotel) {
-		this.hotel = hotel;
-	}
-
-	public Long getBookingId() {
-		return bookingId;
-	}
-
-	public String getBookingNumber() {
-		return bookingNumber;
-	}
-
-	public LocalDate getCheckInDate() {
-		return checkInDate;
-	}
-
-	public LocalDate getCheckOutDate() {
-		return checkOutDate;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public double getTotalAmount() {
-		return totalAmount;
-	}
-
-	public String getFilepath() {
-		return filepath;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public Hotel getHotel() {
-		return hotel;
-	}
 
 	private LocalDate checkOutDate;
 	

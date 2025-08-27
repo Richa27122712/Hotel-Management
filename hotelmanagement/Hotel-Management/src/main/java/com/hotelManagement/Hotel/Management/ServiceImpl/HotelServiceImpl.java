@@ -27,6 +27,7 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	public List<Hotel> getAllHotels() {
+		logger.info("getting all hotels list");
 		return hotelRepository.findAll();
 	}
 

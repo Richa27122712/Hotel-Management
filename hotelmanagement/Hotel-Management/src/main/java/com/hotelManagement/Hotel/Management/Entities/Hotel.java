@@ -15,6 +15,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Hotel {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long hotelId;
+	
+	private String hotelName;
+	
+	private String location;
+	
+	private int rating;
 	public void setHotelId(Long hotelId) {
 		this.hotelId = hotelId;
 	}
@@ -47,15 +57,7 @@ public class Hotel {
 		return rating;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long hotelId;
 	
-	private String hotelName;
-	
-	private String location;
-	
-	private int rating;
 	
 	
 

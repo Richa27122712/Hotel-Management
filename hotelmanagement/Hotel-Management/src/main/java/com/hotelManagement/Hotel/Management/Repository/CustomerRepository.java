@@ -9,4 +9,6 @@ import com.hotelManagement.Hotel.Management.Entities.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long>{
 
+	Customer findByCustEmail(String email);
+
 }

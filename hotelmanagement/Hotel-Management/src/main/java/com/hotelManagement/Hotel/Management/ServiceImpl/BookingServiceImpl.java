@@ -33,6 +33,7 @@ public class BookingServiceImpl implements BookingService{
 	private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
 
 	public Booking createBooking(Booking booking,Long hotelId,Long custId) {
+		logger.info("inside create booking method");		
 		Customer customer=cutomerRepository.findById(custId).orElseThrow(()->new RuntimeException("customer not find"));
 		Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(()->new RuntimeException("hotel not find"));
 		
